@@ -5,7 +5,7 @@ import { MongoClient } from "mongodb"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
-import { thai_province } from "./thai_province.js";
+import { thai_province } from "./thai_province.js"
 
 dotenv.config()
 const app = express()
@@ -44,8 +44,8 @@ app.use(express.urlencoded({ extended: true }))
 
 // JWT Middleware
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
+  const authHeader = req.headers["authorization"]
+  const token = authHeader && authHeader.split(" ")[1]
 
   if (!token) {
     return res.status(401).json({ message: "กรุณาเข้าสู่ระบบ" })
@@ -61,13 +61,48 @@ const authenticateToken = (req, res, next) => {
 }
 
 app.get("/", (req, res) => {
-    res.send("Hello World!")
+  res.send("Hello World!")
+})
+
+app.get('/provinces/all', (req, res) => {
+    res.json(thai_province)
+})
+
+// Protected Routes (ต้องมี token ถึงจะเข้าถึงได้)
+app.get("/provinces", (req, res) => {
+  const provinces = Object.keys(jsonData)
+  res.json(provinces)
+})
+
+app.get("/provinces/:province", (req, res) => {
+  const { province } = req.params
+  const districts = Object.keys(jsonData[province]) || []
+  res.json(districts)
+})
+
+app.get("/provinces/:province/:district", (req, res) => {
+  const { district, province } = req.params
+  const subDistricts = jsonData[province][district] || []
+  res.json(subDistricts)
+})
+
+// User Profile Route
+app.get("/profile", async (req, res) => {
+  try {
+    const user = await db
+      .collection("users")
+      .findOne({ _id: req.user.id }, { projection: { password: 0 } })
+    res.json(user)
+  } catch (err) {
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้" })
+  }
 })
 
 // Authentication Routes
 app.post("/register", async (req, res) => {
   try {
-    const { username, password, email, province, district, sub_district } = req.body
+    const { username, password, email, province, district, sub_district } =
+      req.body
 
     // ตรวจสอบข้อมูลที่จำเป็น
     if (!username || !password || !email) {
@@ -125,7 +160,7 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign(
       { id: user._id, username: user.username },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" }
     )
 
     res.json({
@@ -138,37 +173,6 @@ app.post("/login", async (req, res) => {
     })
   } catch (err) {
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" })
-  }
-})
-
-// Protected Routes (ต้องมี token ถึงจะเข้าถึงได้)
-app.get("/provinces", (req, res) => {
-  const provinces = Object.keys(jsonData)
-  res.json(provinces)
-})
-
-app.get("/provinces/:province", (req, res) => {
-  const { province } = req.params
-  const districts = Object.keys(jsonData[province]) || []
-  res.json(districts)
-})
-
-app.get("/provinces/:province/:district", (req, res) => {
-  const { district, province } = req.params
-  const subDistricts = jsonData[province][district] || []
-  res.json(subDistricts)
-})
-
-// User Profile Route
-app.get("/profile", async (req, res) => {
-  try {
-    const user = await db.collection("users").findOne(
-      { _id: req.user.id },
-      { projection: { password: 0 } }
-    )
-    res.json(user)
-  } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้" })
   }
 })
 

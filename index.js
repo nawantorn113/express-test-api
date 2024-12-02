@@ -59,6 +59,10 @@ const authenticateToken = (req, res, next) => {
   })
 }
 
+app.get("/", (req, res) => {
+    res.send("Hello World!")
+})
+
 // Authentication Routes
 app.post("/register", async (req, res) => {
   try {
@@ -137,25 +141,25 @@ app.post("/login", async (req, res) => {
 })
 
 // Protected Routes (ต้องมี token ถึงจะเข้าถึงได้)
-app.get("/provinces", authenticateToken, (req, res) => {
+app.get("/provinces", (req, res) => {
   const provinces = Object.keys(jsonData)
   res.json(provinces)
 })
 
-app.get("/provinces/:province", authenticateToken, (req, res) => {
+app.get("/provinces/:province", (req, res) => {
   const { province } = req.params
   const districts = Object.keys(jsonData[province]) || []
   res.json(districts)
 })
 
-app.get("/provinces/:province/:district", authenticateToken, (req, res) => {
+app.get("/provinces/:province/:district", (req, res) => {
   const { district, province } = req.params
   const subDistricts = jsonData[province][district] || []
   res.json(subDistricts)
 })
 
 // User Profile Route
-app.get("/profile", authenticateToken, async (req, res) => {
+app.get("/profile", async (req, res) => {
   try {
     const user = await db.collection("users").findOne(
       { _id: req.user.id },

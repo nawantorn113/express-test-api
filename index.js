@@ -4,13 +4,14 @@ import path from "path"
 import { MongoClient } from "mongodb"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import dotenv from "dotenv"
 
+dotenv.config()
 const app = express()
-const port = 3000
-const JWT_SECRET = "cGD+C14dsDfwlmon2jS3Gva332SifUhCz31Swtb9mjg50BV2H6jLneS4QIiTtTT3Px2clBuOCOl0qxifChOWYw==" // ควรเก็บไว้ใน environment variable
-const MONGO_URI = "mongodb+srv://apisit250aps:mNuTAQ2kDVmP3OhI@cluster0.jwfno.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-const DB_NAME = "thaiAddressDB"
-
+const port = process.env.PORT || 3000
+const JWT_SECRET = process.env.JWT_SECRET
+const MONGO_URI = process.env.MONGO_URI
+const DB_NAME = process.env.DB_NAME || "thaiAddressDB"
 let jsonData = {}
 let db
 

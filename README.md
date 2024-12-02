@@ -113,7 +113,8 @@ Get current user profile.
   "sub_district": "string",
   "createdAt": "date"
 }
-```๐
+```
+
 #### PUT /profile
 Update user profile information.
 

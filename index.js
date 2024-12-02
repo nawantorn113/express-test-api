@@ -5,6 +5,7 @@ import { MongoClient } from "mongodb"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
+import { thai_province } from "./thai_province.js";
 
 dotenv.config()
 const app = express()
@@ -12,7 +13,7 @@ const port = process.env.PORT || 3000
 const JWT_SECRET = process.env.JWT_SECRET
 const MONGO_URI = process.env.MONGO_URI
 const DB_NAME = process.env.DB_NAME || "thaiAddressDB"
-let jsonData = {}
+let jsonData = thai_province
 let db
 
 // MongoDB Connection

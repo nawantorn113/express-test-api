@@ -1,7 +1,7 @@
 import express from "express"
 import fs from "fs"
 import path from "path"
-import { MongoClient } from "mongodb"
+import { MongoClient, ObjectId } from "mongodb"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
@@ -12,7 +12,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const JWT_SECRET = process.env.JWT_SECRET
 const MONGO_URI = process.env.MONGO_URI
-const DB_NAME = process.env.DB_NAME || "thaiAddressDB"
+const DB_NAME = process.env.DB_NAME
 let jsonData = thai_province
 let db
 
@@ -64,8 +64,8 @@ app.get("/", (req, res) => {
   res.send("Hello World!")
 })
 
-app.get('/provinces/all', (req, res) => {
-    res.json(thai_province)
+app.get("/provinces/all", (req, res) => {
+  res.json(thai_province)
 })
 
 // Protected Routes (ต้องมี token ถึงจะเข้าถึงได้)
@@ -87,14 +87,36 @@ app.get("/provinces/:province/:district", (req, res) => {
 })
 
 // User Profile Route
-app.get("/profile", async (req, res) => {
+app.get("/profile", authenticateToken, async (req, res) => {
   try {
     const user = await db
       .collection("users")
-      .findOne({ _id: req.user.id }, { projection: { password: 0 } })
+      .findOne({ username: req.user.username }, { projection: { password: 0 } })
+    console.log(user)
     res.json(user)
   } catch (err) {
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้" })
+  }
+})
+
+app.put("/profile", authenticateToken, async (req, res) => {
+  try {
+    const { email, province, district, sub_district } = req.body
+
+    const result = await db
+      .collection("users")
+      .updateOne(
+        { username: req.user.username },
+        { $set: { email, province, district, sub_district } }
+      )
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "ไม่พบผู้ใช้งาน" })
+    }
+
+    res.json({ message: "อัพเดทข้อมูลสำเร็จ" })
+  } catch (err) {
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัพเดทข้อมูล" })
   }
 })
 

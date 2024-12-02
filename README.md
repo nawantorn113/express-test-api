@@ -113,4 +113,23 @@ Get current user profile.
   "sub_district": "string",
   "createdAt": "date"
 }
+```๐
+#### PUT /profile
+Update user profile information.
+
+**Request Body:**
+```json
+{
+  "email": "string",
+  "province": "string", 
+  "district": "string",
+  "sub_district": "string"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "อัพเดทข้อมูลสำเร็จ"
+}
 ```

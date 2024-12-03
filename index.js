@@ -13,7 +13,7 @@ const app = express()
 const port = process.env.PORT || 3000
 const JWT_SECRET = process.env.JWT_SECRET
 const MONGO_URI = process.env.MONGO_URI
-const DB_NAME = process.env.DB_NAME
+const DB_NAME = process.env.DB_NAME || "thaiAddressDB"
 let jsonData = thai_province
 let db
 

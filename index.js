@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import { thai_province } from "./thai_province.js"
+import cors from 'cors'
 
 dotenv.config()
 const app = express()
@@ -39,6 +40,7 @@ const loadJsonData = () => {
 }
 
 // Middleware
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

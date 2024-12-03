@@ -97,7 +97,8 @@ app.get("/profile", authenticateToken, async (req, res) => {
     console.log(user)
     res.json(user)
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้" })
+    
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้", error: err })
   }
 })
 
@@ -118,7 +119,7 @@ app.put("/profile", authenticateToken, async (req, res) => {
 
     res.json({ message: "อัพเดทข้อมูลสำเร็จ" })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัพเดทข้อมูล" })
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัพเดทข้อมูล" ,error: err })
   }
 })
 
@@ -155,7 +156,7 @@ app.post("/register", async (req, res) => {
     await db.collection("users").insertOne(user)
     res.status(201).json({ message: "ลงทะเบียนสำเร็จ" })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน" })
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน",error: err })
   }
 })
 
@@ -196,7 +197,7 @@ app.post("/login", async (req, res) => {
       }
     })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" })
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",error: err })
   }
 })
 

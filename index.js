@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import { thai_province } from "./thai_province.js"
-import cors from 'cors'
+import cors from "cors"
 
 dotenv.config()
 const app = express()
@@ -97,8 +97,9 @@ app.get("/profile", authenticateToken, async (req, res) => {
     console.log(user)
     res.json(user)
   } catch (err) {
-    
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้", error: err })
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในการดึงข้อมูลผู้ใช้", error: err })
   }
 })
 
@@ -119,7 +120,9 @@ app.put("/profile", authenticateToken, async (req, res) => {
 
     res.json({ message: "อัพเดทข้อมูลสำเร็จ" })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัพเดทข้อมูล" ,error: err })
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในการอัพเดทข้อมูล", error: err })
   }
 })
 
@@ -156,7 +159,9 @@ app.post("/register", async (req, res) => {
     await db.collection("users").insertOne(user)
     res.status(201).json({ message: "ลงทะเบียนสำเร็จ" })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน",error: err.message })
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน", error: err.message })
   }
 })
 
@@ -197,12 +202,19 @@ app.post("/login", async (req, res) => {
       }
     })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ",error: err })
+    res
+      .status(500)
+      .json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ", error: err })
   }
 })
 
-app.listen(port, async () => {
+async function main() {
   await connectDB()
   loadJsonData()
+}
+
+
+main()
+app.listen(port, async () => {
   console.log(`listening on http://localhost:${port}`)
 })

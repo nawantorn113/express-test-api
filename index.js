@@ -156,7 +156,7 @@ app.post("/register", async (req, res) => {
     await db.collection("users").insertOne(user)
     res.status(201).json({ message: "ลงทะเบียนสำเร็จ" })
   } catch (err) {
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน",error: err })
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการลงทะเบียน",error: err.message })
   }
 })
 
